@@ -3,6 +3,8 @@ import { createClient } from "@supabase/supabase-js";
 // Clean up environment variables in case they were pasted with quotes, spaces, or missing https://
 let supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 supabaseUrl = supabaseUrl.replace(/['"]/g, "").trim();
+// Automatically remove /rest/v1/ or /rest/v1 if the user accidentally included it
+supabaseUrl = supabaseUrl.replace(/\/rest\/v1\/?$/, "");
 if (supabaseUrl && !supabaseUrl.startsWith("http")) {
   supabaseUrl = "https://" + supabaseUrl;
 }
