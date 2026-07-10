@@ -13,6 +13,7 @@ import { formatCurrency, formatDate, daysUntil, getGreeting } from "@/lib/utils"
 import StatCard from "@/components/StatCard";
 import StatusBadge from "@/components/StatusBadge";
 import type { LoanWithBorrower } from "@/lib/database.types";
+import { useAuth } from "@/lib/AuthContext";
 
 interface DashboardStats {
   activeLoans: number;
@@ -28,17 +29,26 @@ export default function DashboardPage() {
   });
   const [upcoming, setUpcoming] = useState<LoanWithBorrower[]>([]);
   const [loading, setLoading] = useState(true);
+  const { user, isAdmin, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    fetchDashboard();
-  }, []);
+    if (!authLoading && user) {
+      fetchDashboard();
+    }
+  }, [authLoading, user, isAdmin]);
 
   async function fetchDashboard() {
     setLoading(true);
 
-    const { data: loans } = await supabase
+    let query = supabase
       .from("loans")
-      .select("*, borrowers(full_name, phone)");
+      .select("*, borrowers!inner(full_name, phone, auth_user_id)");
+
+    if (!isAdmin && user) {
+      query = query.eq("borrowers.auth_user_id", user.id);
+    }
+
+    const { data: loans } = await query;
 
     if (loans) {
       const active = loans.filter((l) => l.status === "ACTIVE");
@@ -94,7 +104,9 @@ export default function DashboardPage() {
           {getGreeting()} 👋
         </h1>
         <p className="mt-1 text-sm" style={{ color: "#6b7280" }}>
-          Here&apos;s your lending portfolio overview.
+          {isAdmin 
+            ? "Here's your lending portfolio overview." 
+            : "Here's the summary of your current loans."}
         </p>
       </div>
 
@@ -107,19 +119,21 @@ export default function DashboardPage() {
           accentColor="#0a3622"
           delay={0}
         />
+        {isAdmin && (
+          <StatCard
+            label="Total Money Out"
+            value={formatCurrency(stats.totalMoneyOut)}
+            icon={<ArrowUpRight size={22} />}
+            accentColor="#d97706"
+            delay={80}
+          />
+        )}
         <StatCard
-          label="Total Money Out"
-          value={formatCurrency(stats.totalMoneyOut)}
-          icon={<ArrowUpRight size={22} />}
-          accentColor="#d97706"
-          delay={80}
-        />
-        <StatCard
-          label="Total Collected"
+          label={isAdmin ? "Total Collected" : "Total Paid"}
           value={formatCurrency(stats.totalCollected)}
           icon={<ArrowDownLeft size={22} />}
           accentColor="#00c46a"
-          delay={160}
+          delay={isAdmin ? 160 : 80}
         />
       </div>
 

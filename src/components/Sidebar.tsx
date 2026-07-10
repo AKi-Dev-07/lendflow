@@ -8,8 +8,11 @@ import {
   Landmark,
   Receipt,
   Sparkles,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/AuthContext";
+import { supabase } from "@/lib/supabase";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -20,6 +23,17 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { user, isAdmin } = useAuth();
+
+  const filteredNavItems = navItems.filter((item) => {
+    if (isAdmin) return true;
+    // Borrowers only see Dashboard and Repayments (or you can adjust as needed)
+    return item.href === "/" || item.href === "/repayments";
+  });
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
 
   return (
     <aside
@@ -58,7 +72,7 @@ export default function Sidebar() {
 
       {/* ── Navigation ────────────────────────── */}
       <nav className="flex-1 space-y-1 px-3 py-2">
-        {navItems.map(({ href, label, icon: Icon }) => {
+        {filteredNavItems.map(({ href, label, icon: Icon }) => {
           const isActive = pathname === href;
           return (
             <Link
@@ -115,17 +129,27 @@ export default function Sidebar() {
         className="px-5 py-4"
         style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
       >
+        <button
+          onClick={handleSignOut}
+          className="mb-4 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-white/10"
+          style={{ color: "rgba(255,255,255,0.7)" }}
+        >
+          <LogOut size={16} />
+          Sign out
+        </button>
         <div className="flex items-center gap-3">
           <div
-            className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold text-white"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold text-white uppercase"
             style={{ backgroundColor: "#00c46a" }}
           >
-            A
+            {user?.email?.[0] || "U"}
           </div>
-          <div>
-            <p className="text-sm font-medium text-white">Admin</p>
+          <div className="flex-1 overflow-hidden">
+            <p className="truncate text-sm font-medium text-white">
+              {user?.email || "User"}
+            </p>
             <p className="text-[0.65rem]" style={{ color: "rgba(255,255,255,0.35)" }}>
-              Free Tier
+              {isAdmin ? "Administrator" : "Borrower"}
             </p>
           </div>
         </div>

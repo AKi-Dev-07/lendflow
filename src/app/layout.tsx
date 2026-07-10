@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
+import { AuthProvider } from "@/lib/AuthContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import AppLayout from "@/components/AppLayout";
 
 export const metadata: Metadata = {
   title: "LendFlow — Loan Management Dashboard",
@@ -16,10 +18,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <div className="flex min-h-screen" style={{ backgroundColor: "#f3f2eb" }}>
-          <Sidebar />
-          <main className="ml-64 flex-1 px-8 py-7">{children}</main>
-        </div>
+        <AuthProvider>
+          <ProtectedRoute>
+            <AppLayout>{children}</AppLayout>
+          </ProtectedRoute>
+        </AuthProvider>
       </body>
     </html>
   );
