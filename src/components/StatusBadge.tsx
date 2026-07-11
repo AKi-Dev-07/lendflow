@@ -1,13 +1,13 @@
 const config: Record<string, { bg: string; text: string; dot: string }> = {
   ACTIVE: {
-    bg: "rgba(139, 110, 78, 0.1)",
-    text: "#8B6E4E",
-    dot: "#8B6E4E",
+    bg: "rgba(220, 38, 38, 0.1)",
+    text: "#DC2626",
+    dot: "#DC2626",
   },
   PAID: {
-    bg: "rgba(28, 24, 20, 0.06)",
-    text: "#1C1814",
-    dot: "#1C1814",
+    bg: "rgba(22, 163, 74, 0.1)",
+    text: "#16A34A",
+    dot: "#16A34A",
   },
   DEFAULTED: {
     bg: "rgba(180, 77, 77, 0.08)",

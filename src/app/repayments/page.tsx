@@ -8,6 +8,7 @@ import {
   Banknote,
   ChevronRight,
   ArrowLeft,
+  Search,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatDate } from "@/lib/utils";
@@ -25,6 +26,7 @@ export default function RepaymentsPage() {
   const [loadingRepayments, setLoadingRepayments] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [search, setSearch] = useState("");
 
   const [payForm, setPayForm] = useState({
     amount_paid: "",
@@ -125,6 +127,11 @@ export default function RepaymentsPage() {
       </div>
     );
   }
+
+  const filteredLoans = loans.filter((loan) =>
+    loan.borrowers.full_name.toLowerCase().includes(search.toLowerCase()) ||
+    loan.borrowers.phone.includes(search)
+  );
 
   // ─── Detail view ───────────────────────────────
   if (selectedLoan) {
@@ -425,7 +432,22 @@ export default function RepaymentsPage() {
         </p>
       </div>
 
-      {loans.length === 0 ? (
+      <div className="mb-5 relative">
+        <Search
+          size={16}
+          className="absolute left-3.5 top-1/2 -translate-y-1/2"
+          style={{ color: "#7A6E64" }}
+        />
+        <input
+          type="text"
+          placeholder="Search by borrower name or phone..."
+          className="input-field pl-10"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+
+      {filteredLoans.length === 0 ? (
         <div className="card empty-state">
           <Receipt size={40} className="mx-auto mb-2" style={{ color: "#E2D9CE" }} />
           <p className="text-sm" style={{ color: "#7A6E64" }}>
@@ -434,7 +456,7 @@ export default function RepaymentsPage() {
         </div>
       ) : (
         <div className="stagger space-y-3">
-          {loans.map((loan, i) => (
+          {filteredLoans.map((loan, i) => (
             <button
               key={loan.id}
               onClick={() => selectLoan(loan)}
