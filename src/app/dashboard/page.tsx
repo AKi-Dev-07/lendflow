@@ -141,7 +141,6 @@ export default function DashboardPage() {
     );
   }
 
-  const isCurrentMonth = selectedMonth === now.getMonth() && selectedYear === now.getFullYear();
 
   return (
     <div>
