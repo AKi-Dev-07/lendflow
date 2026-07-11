@@ -5,7 +5,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import AppLayout from "@/components/AppLayout";
 
 export const metadata: Metadata = {
-  title: "LendFlow — Loan Management Dashboard",
+  title: "MORGAN — Loan Management Dashboard",
   description:
     "A modern, local moneylending management system. Track borrowers, loans, and repayments in one place.",
 };

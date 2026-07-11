@@ -21,7 +21,7 @@ const navItems = [
   { href: "/repayments", label: "Repayments", icon: Receipt },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
   const { user, isAdmin, authError } = useAuth();
 
@@ -36,7 +36,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className="fixed inset-y-0 left-0 z-40 flex w-64 flex-col animate-fade-in-right"
+      className="h-full w-64 flex flex-col bg-[#1C1814] shadow-2xl md:shadow-none"
       style={{ backgroundColor: "#1C1814" }}
     >
       {/* ── Logo ──────────────────────────────── */}
@@ -44,7 +44,7 @@ export default function Sidebar() {
         <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl animate-float">
           <Image
             src="/logo.png"
-            alt="LendFlow Logo"
+            alt="MORGAN Logo"
             fill
             className="object-cover"
             priority
@@ -55,7 +55,7 @@ export default function Sidebar() {
             className="text-lg font-bold text-white tracking-tight"
             style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
           >
-            LendFlow
+            MORGAN
           </h1>
           <p
             className="text-[0.65rem] font-medium"
@@ -73,18 +73,19 @@ export default function Sidebar() {
       />
 
       {/* ── Navigation ────────────────────────── */}
-      <nav className="flex-1 space-y-1 px-3 py-2">
+      <nav className="flex-1 space-y-1 px-3 py-2 overflow-y-auto">
         {filteredNavItems.map(({ href, label, icon: Icon }, index) => {
           const isActive = pathname === href;
           return (
             <Link
               key={href}
               href={href}
+              onClick={onClose}
               className={cn(
                 "group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium animate-fade-in-right"
               )}
               style={{
-                animationDelay: `${index * 60}ms`,
+                animationDelay: `${index * 40}ms`,
                 ...(isActive
                   ? {
                       backgroundColor: "rgba(139, 110, 78, 0.18)",
@@ -158,7 +159,7 @@ export default function Sidebar() {
         </button>
         <div className="flex items-center gap-3">
           <div
-            className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold text-white uppercase"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold text-white uppercase shrink-0"
             style={{ backgroundColor: "#8B6E4E" }}
           >
             {user?.email?.[0] || "U"}

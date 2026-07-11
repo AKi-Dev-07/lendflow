@@ -39,7 +39,7 @@ export default function LoginPage() {
           <div className="relative mb-4 h-16 w-16 animate-float">
             <Image
               src="/logo.png"
-              alt="LendFlow Logo"
+              alt="MORGAN Logo"
               fill
               className="object-contain rounded-2xl"
               priority
@@ -53,7 +53,7 @@ export default function LoginPage() {
               animationDelay: "100ms",
             }}
           >
-            LendFlow
+            MORGAN
           </h1>
           <p
             className="mt-2 text-sm font-medium animate-fade-in"
@@ -95,7 +95,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="input-field pl-10"
-                  placeholder="admin@lendflow.app"
+                  placeholder="admin@morgan.app"
                 />
               </div>
             </div>

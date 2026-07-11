@@ -130,9 +130,7 @@ export default function DashboardPage() {
           <p className="quote-text">
             &ldquo;{quote.text}&rdquo;
           </p>
-          <p className="quote-author mt-1.5">
-            — {quote.author}
-          </p>
+
         </div>
       </div>
 
