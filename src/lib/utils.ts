@@ -3,10 +3,9 @@ export function cn(...classes: (string | boolean | undefined | null)[]): string 
 }
 
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+  return "Rs. " + new Intl.NumberFormat("en-IN", {
     minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(amount);
 }
 

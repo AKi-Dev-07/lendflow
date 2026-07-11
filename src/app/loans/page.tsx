@@ -262,7 +262,7 @@ export default function LoansPage() {
                 min="1"
                 step="0.01"
                 className="input-field"
-                placeholder="e.g. 5000"
+                placeholder="e.g. 50000"
                 value={form.principal_amount}
                 onChange={(e) =>
                   setForm({ ...form, principal_amount: e.target.value })

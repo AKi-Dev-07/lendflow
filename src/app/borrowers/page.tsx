@@ -178,7 +178,7 @@ export default function BorrowersPage() {
               type="tel"
               required
               className="input-field"
-              placeholder="e.g. +254 712 345 678"
+              placeholder="e.g. +91 98765 43210"
               value={form.phone}
               onChange={(e) =>
                 setForm({ ...form, phone: e.target.value })
@@ -191,7 +191,7 @@ export default function BorrowersPage() {
               type="text"
               required
               className="input-field"
-              placeholder="e.g. 12345678"
+              placeholder="e.g. 1234 5678 9012"
               value={form.national_id}
               onChange={(e) =>
                 setForm({ ...form, national_id: e.target.value })
@@ -203,7 +203,7 @@ export default function BorrowersPage() {
             <input
               type="text"
               className="input-field"
-              placeholder="e.g. 123 Main St, Nairobi"
+              placeholder="e.g. 123 Main St, Mumbai"
               value={form.address ?? ""}
               onChange={(e) =>
                 setForm({ ...form, address: e.target.value })
