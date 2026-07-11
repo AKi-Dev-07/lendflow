@@ -62,7 +62,11 @@ export default function DashboardPage() {
 
     let query = supabase
       .from("loans")
-      .select("*, borrowers!inner(full_name, phone, auth_user_id)");
+      .select(
+        isAdmin
+          ? "*, borrowers(full_name, phone)"
+          : "*, borrowers!inner(full_name, phone)"
+      );
 
     if (!isAdmin && user) {
       query = query.eq("borrowers.auth_user_id", user.id);
