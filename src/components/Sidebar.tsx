@@ -23,7 +23,7 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, authError } = useAuth();
 
   const filteredNavItems = navItems.filter((item) => {
     if (isAdmin) return true;
@@ -151,6 +151,11 @@ export default function Sidebar() {
             <p className="text-[0.65rem]" style={{ color: "rgba(255,255,255,0.35)" }}>
               {isAdmin ? "Administrator" : "Borrower"}
             </p>
+            {authError && (
+              <p className="text-[0.6rem] text-red-400 mt-1 truncate" title={authError}>
+                Error: {authError}
+              </p>
+            )}
           </div>
         </div>
       </div>

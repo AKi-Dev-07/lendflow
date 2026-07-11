@@ -10,6 +10,7 @@ interface AuthContextType {
   profile: Profile | null;
   isAdmin: boolean;
   loading: boolean;
+  authError: string | null;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -17,12 +18,14 @@ const AuthContext = createContext<AuthContextType>({
   profile: null,
   isAdmin: false,
   loading: true,
+  authError: null,
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
     // Check active session
@@ -61,8 +64,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (error) {
         console.error("Error fetching profile:", error);
+        setAuthError(error.message);
       } else {
         setProfile(data);
+        setAuthError(null);
       }
     } finally {
       setLoading(false);
@@ -74,6 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     profile,
     isAdmin: profile?.is_admin ?? false,
     loading,
+    authError,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
