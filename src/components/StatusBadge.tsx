@@ -1,18 +1,18 @@
 const config: Record<string, { bg: string; text: string; dot: string }> = {
   ACTIVE: {
-    bg: "rgba(0, 196, 106, 0.1)",
-    text: "#059669",
-    dot: "#00c46a",
+    bg: "rgba(139, 110, 78, 0.1)",
+    text: "#8B6E4E",
+    dot: "#8B6E4E",
   },
   PAID: {
-    bg: "rgba(10, 54, 34, 0.08)",
-    text: "#0a3622",
-    dot: "#0a3622",
+    bg: "rgba(28, 24, 20, 0.06)",
+    text: "#1C1814",
+    dot: "#1C1814",
   },
   DEFAULTED: {
-    bg: "rgba(220, 38, 38, 0.08)",
-    text: "#dc2626",
-    dot: "#dc2626",
+    bg: "rgba(180, 77, 77, 0.08)",
+    text: "#b44d4d",
+    dot: "#b44d4d",
   },
 };
 
@@ -25,7 +25,7 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
   return (
     <span
       className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
-      style={{ backgroundColor: c.bg, color: c.text }}
+      style={{ backgroundColor: c.bg, color: c.text, fontFamily: "'Jost', sans-serif" }}
     >
       <span
         className="inline-block h-1.5 w-1.5 rounded-full"

@@ -11,7 +11,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     return (
       <main
         className="flex min-h-screen flex-col"
-        style={{ backgroundColor: "#f3f2eb" }}
+        style={{ backgroundColor: "#F9F6F2" }}
       >
         {children}
       </main>
@@ -19,7 +19,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen" style={{ backgroundColor: "#f3f2eb" }}>
+    <div className="flex min-h-screen" style={{ backgroundColor: "#F9F6F2" }}>
       <Sidebar />
       <main className="ml-64 flex-1 px-8 py-7">{children}</main>
     </div>

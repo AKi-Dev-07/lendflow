@@ -4,7 +4,7 @@ interface StatCardProps {
   label: string;
   value: string;
   icon: ReactNode;
-  accentColor: string; // e.g. "#0a3622"
+  accentColor: string;
   delay?: number;
 }
 
@@ -34,10 +34,16 @@ export default function StatCard({
 
       {/* Text */}
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#9ca3af" }}>
+        <p
+          className="text-xs font-semibold uppercase tracking-wider"
+          style={{ color: "#7A6E64", fontFamily: "'Jost', sans-serif" }}
+        >
           {label}
         </p>
-        <p className="text-2xl font-bold mt-0.5" style={{ color: "#1a1a1a" }}>
+        <p
+          className="text-2xl font-bold mt-0.5"
+          style={{ color: "#1C1814", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+        >
           {value}
         </p>
       </div>

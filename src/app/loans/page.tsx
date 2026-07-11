@@ -105,7 +105,7 @@ export default function LoansPage() {
   if (loading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <Loader2 size={32} className="animate-spin" style={{ color: "#0a3622" }} />
+        <Loader2 size={32} className="animate-spin" style={{ color: "#8B6E4E" }} />
       </div>
     );
   }
@@ -115,11 +115,14 @@ export default function LoansPage() {
       {/* ── Header ────────────────────────────── */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2" style={{ color: "#1a1a1a" }}>
-            <Landmark size={24} style={{ color: "#0a3622" }} />
+          <h1
+            className="text-2xl font-bold flex items-center gap-2"
+            style={{ color: "#1C1814", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
+            <Landmark size={24} style={{ color: "#8B6E4E" }} />
             Loan Management
           </h1>
-          <p className="mt-1 text-sm" style={{ color: "#6b7280" }}>
+          <p className="mt-1 text-sm" style={{ color: "#7A6E64" }}>
             {loans.length} loan{loans.length !== 1 ? "s" : ""} issued
           </p>
         </div>
@@ -139,7 +142,7 @@ export default function LoansPage() {
           <Search
             size={16}
             className="absolute left-3.5 top-1/2 -translate-y-1/2"
-            style={{ color: "#9ca3af" }}
+            style={{ color: "#7A6E64" }}
           />
           <input
             type="text"
@@ -164,8 +167,8 @@ export default function LoansPage() {
       {/* ── Table ─────────────────────────────── */}
       {filtered.length === 0 ? (
         <div className="card empty-state">
-          <Landmark size={40} className="mx-auto mb-2" style={{ color: "#d1d5db" }} />
-          <p className="text-sm" style={{ color: "#9ca3af" }}>
+          <Landmark size={40} className="mx-auto mb-2" style={{ color: "#E2D9CE" }} />
+          <p className="text-sm" style={{ color: "#7A6E64" }}>
             {search || statusFilter !== "ALL"
               ? "No loans match your filters."
               : "No loans issued yet. Create your first loan to begin."}
@@ -189,27 +192,27 @@ export default function LoansPage() {
             <tbody>
               {filtered.map((loan) => (
                 <tr key={loan.id}>
-                  <td className="font-semibold" style={{ color: "#1a1a1a" }}>
+                  <td className="font-semibold" style={{ color: "#1C1814" }}>
                     {loan.borrowers.full_name}
                   </td>
                   <td>{formatCurrency(Number(loan.principal_amount))}</td>
                   <td>{Number(loan.interest_rate)}%</td>
-                  <td className="font-semibold" style={{ color: "#374151" }}>
+                  <td className="font-semibold" style={{ color: "#1C1814" }}>
                     {formatCurrency(Number(loan.total_due))}
                   </td>
                   <td
                     className="font-semibold"
                     style={{
                       color:
-                        Number(loan.balance) > 0 ? "#d97706" : "#059669",
+                        Number(loan.balance) > 0 ? "#C8A882" : "#8B6E4E",
                     }}
                   >
                     {formatCurrency(Number(loan.balance))}
                   </td>
-                  <td className="text-xs" style={{ color: "#9ca3af" }}>
+                  <td className="text-xs" style={{ color: "#7A6E64" }}>
                     {formatDate(loan.issue_date)}
                   </td>
-                  <td className="text-xs" style={{ color: "#9ca3af" }}>
+                  <td className="text-xs" style={{ color: "#7A6E64" }}>
                     {formatDate(loan.due_date)}
                   </td>
                   <td>
@@ -287,16 +290,19 @@ export default function LoansPage() {
           <div
             className="flex items-center gap-3 rounded-xl p-3.5"
             style={{
-              background: "rgba(10, 54, 34, 0.05)",
-              border: "1px solid rgba(10, 54, 34, 0.1)",
+              background: "rgba(139, 110, 78, 0.06)",
+              border: "1px solid rgba(139, 110, 78, 0.12)",
             }}
           >
-            <Calculator size={18} style={{ color: "#0a3622" }} />
+            <Calculator size={18} style={{ color: "#8B6E4E" }} />
             <div>
-              <p className="text-xs font-medium" style={{ color: "#6b7280" }}>
+              <p className="text-xs font-medium" style={{ color: "#7A6E64" }}>
                 Total Due (auto-calculated)
               </p>
-              <p className="text-lg font-bold" style={{ color: "#0a3622" }}>
+              <p
+                className="text-lg font-bold"
+                style={{ color: "#8B6E4E", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+              >
                 {formatCurrency(totalDue)}
               </p>
             </div>

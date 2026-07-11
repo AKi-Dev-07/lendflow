@@ -62,7 +62,7 @@ export default function BorrowersPage() {
   if (loading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <Loader2 size={32} className="animate-spin" style={{ color: "#0a3622" }} />
+        <Loader2 size={32} className="animate-spin" style={{ color: "#8B6E4E" }} />
       </div>
     );
   }
@@ -72,11 +72,14 @@ export default function BorrowersPage() {
       {/* ── Header ────────────────────────────── */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2" style={{ color: "#1a1a1a" }}>
-            <Users size={24} style={{ color: "#0a3622" }} />
+          <h1
+            className="text-2xl font-bold flex items-center gap-2"
+            style={{ color: "#1C1814", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
+            <Users size={24} style={{ color: "#8B6E4E" }} />
             Borrowers Directory
           </h1>
-          <p className="mt-1 text-sm" style={{ color: "#6b7280" }}>
+          <p className="mt-1 text-sm" style={{ color: "#7A6E64" }}>
             {borrowers.length} borrower{borrowers.length !== 1 ? "s" : ""}{" "}
             registered
           </p>
@@ -92,7 +95,7 @@ export default function BorrowersPage() {
         <Search
           size={16}
           className="absolute left-3.5 top-1/2 -translate-y-1/2"
-          style={{ color: "#9ca3af" }}
+          style={{ color: "#7A6E64" }}
         />
         <input
           type="text"
@@ -106,8 +109,8 @@ export default function BorrowersPage() {
       {/* ── Table ─────────────────────────────── */}
       {filtered.length === 0 ? (
         <div className="card empty-state">
-          <Users size={40} className="mx-auto mb-2" style={{ color: "#d1d5db" }} />
-          <p className="text-sm" style={{ color: "#9ca3af" }}>
+          <Users size={40} className="mx-auto mb-2" style={{ color: "#E2D9CE" }} />
+          <p className="text-sm" style={{ color: "#7A6E64" }}>
             {search
               ? "No borrowers match your search."
               : "No borrowers yet. Add your first borrower to get started."}
@@ -128,18 +131,18 @@ export default function BorrowersPage() {
             <tbody>
               {filtered.map((b) => (
                 <tr key={b.id}>
-                  <td className="font-semibold" style={{ color: "#1a1a1a" }}>{b.full_name}</td>
+                  <td className="font-semibold" style={{ color: "#1C1814" }}>{b.full_name}</td>
                   <td>{b.phone}</td>
                   <td>
                     <code
                       className="rounded-md px-2 py-0.5 text-xs font-medium"
-                      style={{ backgroundColor: "#f3f4f6", color: "#374151" }}
+                      style={{ backgroundColor: "#F2EDE6", color: "#1C1814" }}
                     >
                       {b.national_id}
                     </code>
                   </td>
                   <td className="max-w-48 truncate">{b.address || "—"}</td>
-                  <td className="text-xs" style={{ color: "#9ca3af" }}>
+                  <td className="text-xs" style={{ color: "#7A6E64" }}>
                     {formatDate(b.created_at)}
                   </td>
                 </tr>

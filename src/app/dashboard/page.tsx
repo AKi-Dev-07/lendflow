@@ -91,7 +91,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <Loader2 size={32} className="animate-spin" style={{ color: "#0a3622" }} />
+        <Loader2 size={32} className="animate-spin" style={{ color: "#8B6E4E" }} />
       </div>
     );
   }
@@ -100,12 +100,15 @@ export default function DashboardPage() {
     <div className="animate-fade-in">
       {/* ── Header ────────────────────────────── */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold" style={{ color: "#1a1a1a" }}>
+        <h1
+          className="text-2xl font-bold"
+          style={{ color: "#1C1814", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+        >
           {getGreeting()} 👋
         </h1>
-        <p className="mt-1 text-sm" style={{ color: "#6b7280" }}>
-          {isAdmin 
-            ? "Here's your lending portfolio overview." 
+        <p className="mt-1 text-sm" style={{ color: "#7A6E64" }}>
+          {isAdmin
+            ? "Here's your lending portfolio overview."
             : "Here's the summary of your current loans."}
         </p>
       </div>
@@ -116,7 +119,7 @@ export default function DashboardPage() {
           label="Active Loans"
           value={String(stats.activeLoans)}
           icon={<Landmark size={22} />}
-          accentColor="#0a3622"
+          accentColor="#8B6E4E"
           delay={0}
         />
         {isAdmin && (
@@ -124,7 +127,7 @@ export default function DashboardPage() {
             label="Total Money Out"
             value={formatCurrency(stats.totalMoneyOut)}
             icon={<ArrowUpRight size={22} />}
-            accentColor="#d97706"
+            accentColor="#C8A882"
             delay={80}
           />
         )}
@@ -132,7 +135,7 @@ export default function DashboardPage() {
           label={isAdmin ? "Total Collected" : "Total Paid"}
           value={formatCurrency(stats.totalCollected)}
           icon={<ArrowDownLeft size={22} />}
-          accentColor="#00c46a"
+          accentColor="#1C1814"
           delay={isAdmin ? 160 : 80}
         />
       </div>
@@ -140,13 +143,16 @@ export default function DashboardPage() {
       {/* ── Upcoming Payments ─────────────────── */}
       <div className="animate-fade-in" style={{ animationDelay: "200ms" }}>
         <div className="mb-4 flex items-center gap-2">
-          <CalendarClock size={18} style={{ color: "#0a3622" }} />
-          <h2 className="text-lg font-bold" style={{ color: "#1a1a1a" }}>
+          <CalendarClock size={18} style={{ color: "#8B6E4E" }} />
+          <h2
+            className="text-lg font-bold"
+            style={{ color: "#1C1814", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
             Upcoming Payments
           </h2>
           <span
             className="ml-1 rounded-full px-2.5 py-0.5 text-xs font-semibold"
-            style={{ backgroundColor: "rgba(0,196,106,0.12)", color: "#059669" }}
+            style={{ backgroundColor: "rgba(139, 110, 78, 0.1)", color: "#8B6E4E" }}
           >
             Next 7 days
           </span>
@@ -154,8 +160,8 @@ export default function DashboardPage() {
 
         {upcoming.length === 0 ? (
           <div className="card empty-state">
-            <CalendarClock size={40} className="mx-auto mb-2" style={{ color: "#d1d5db" }} />
-            <p className="text-sm" style={{ color: "#9ca3af" }}>
+            <CalendarClock size={40} className="mx-auto mb-2" style={{ color: "#E2D9CE" }} />
+            <p className="text-sm" style={{ color: "#7A6E64" }}>
               No payments due this week. You&apos;re all caught up!
             </p>
           </div>
@@ -177,11 +183,11 @@ export default function DashboardPage() {
                   const days = daysUntil(loan.due_date);
                   return (
                     <tr key={loan.id}>
-                      <td className="font-semibold" style={{ color: "#1a1a1a" }}>
+                      <td className="font-semibold" style={{ color: "#1C1814" }}>
                         {loan.borrowers.full_name}
                       </td>
                       <td>{loan.borrowers.phone}</td>
-                      <td className="font-semibold" style={{ color: "#d97706" }}>
+                      <td className="font-semibold" style={{ color: "#C8A882" }}>
                         {formatCurrency(Number(loan.balance))}
                       </td>
                       <td>{formatDate(loan.due_date)}</td>
@@ -191,16 +197,16 @@ export default function DashboardPage() {
                           style={{
                             color:
                               days <= 0
-                                ? "#dc2626"
+                                ? "#b44d4d"
                                 : days <= 2
-                                ? "#d97706"
-                                : "#059669",
+                                ? "#C8A882"
+                                : "#8B6E4E",
                             backgroundColor:
                               days <= 0
-                                ? "rgba(220,38,38,0.08)"
+                                ? "rgba(180, 77, 77, 0.08)"
                                 : days <= 2
-                                ? "rgba(217,119,6,0.08)"
-                                : "rgba(0,196,106,0.08)",
+                                ? "rgba(200, 168, 130, 0.12)"
+                                : "rgba(139, 110, 78, 0.08)",
                           }}
                         >
                           {days <= 0

@@ -121,7 +121,7 @@ export default function RepaymentsPage() {
   if (loading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <Loader2 size={32} className="animate-spin" style={{ color: "#0a3622" }} />
+        <Loader2 size={32} className="animate-spin" style={{ color: "#8B6E4E" }} />
       </div>
     );
   }
@@ -149,10 +149,13 @@ export default function RepaymentsPage() {
         <div className="card mb-6 p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-xl font-bold" style={{ color: "#1a1a1a" }}>
+              <h2
+                className="text-xl font-bold"
+                style={{ color: "#1C1814", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+              >
                 {selectedLoan.borrowers.full_name}
               </h2>
-              <p className="text-sm mt-0.5" style={{ color: "#6b7280" }}>
+              <p className="text-sm mt-0.5" style={{ color: "#7A6E64" }}>
                 {selectedLoan.borrowers.phone}
               </p>
             </div>
@@ -162,34 +165,46 @@ export default function RepaymentsPage() {
           {/* Stats row */}
           <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#9ca3af" }}>
+              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#7A6E64" }}>
                 Principal
               </p>
-              <p className="text-lg font-bold" style={{ color: "#374151" }}>
+              <p
+                className="text-lg font-bold"
+                style={{ color: "#1C1814", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+              >
                 {formatCurrency(Number(selectedLoan.principal_amount))}
               </p>
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#9ca3af" }}>
+              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#7A6E64" }}>
                 Total Due
               </p>
-              <p className="text-lg font-bold" style={{ color: "#374151" }}>
+              <p
+                className="text-lg font-bold"
+                style={{ color: "#1C1814", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+              >
                 {formatCurrency(Number(selectedLoan.total_due))}
               </p>
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#9ca3af" }}>
+              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#7A6E64" }}>
                 Paid
               </p>
-              <p className="text-lg font-bold" style={{ color: "#059669" }}>
+              <p
+                className="text-lg font-bold"
+                style={{ color: "#8B6E4E", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+              >
                 {formatCurrency(Number(selectedLoan.amount_paid))}
               </p>
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#9ca3af" }}>
+              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#7A6E64" }}>
                 Balance
               </p>
-              <p className="text-lg font-bold" style={{ color: "#d97706" }}>
+              <p
+                className="text-lg font-bold"
+                style={{ color: "#C8A882", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+              >
                 {formatCurrency(Number(selectedLoan.balance))}
               </p>
             </div>
@@ -197,19 +212,19 @@ export default function RepaymentsPage() {
 
           {/* Progress bar */}
           <div className="mt-5">
-            <div className="flex justify-between text-xs font-medium mb-1.5" style={{ color: "#6b7280" }}>
+            <div className="flex justify-between text-xs font-medium mb-1.5" style={{ color: "#7A6E64" }}>
               <span>Repayment Progress</span>
               <span>{paidPercent}%</span>
             </div>
             <div
               className="h-2.5 w-full rounded-full overflow-hidden"
-              style={{ background: "#e8e7df" }}
+              style={{ background: "#F2EDE6" }}
             >
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{
                   width: `${Math.min(100, paidPercent)}%`,
-                  background: "linear-gradient(90deg, #0a3622, #00c46a)",
+                  background: "linear-gradient(90deg, #8B6E4E, #C8A882)",
                 }}
               />
             </div>
@@ -218,8 +233,11 @@ export default function RepaymentsPage() {
 
         {/* Repayments section */}
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold flex items-center gap-2" style={{ color: "#1a1a1a" }}>
-            <Receipt size={18} style={{ color: "#0a3622" }} />
+          <h3
+            className="text-lg font-bold flex items-center gap-2"
+            style={{ color: "#1C1814", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
+            <Receipt size={18} style={{ color: "#8B6E4E" }} />
             Payment History
           </h3>
           {selectedLoan.status === "ACTIVE" && (
@@ -235,12 +253,12 @@ export default function RepaymentsPage() {
 
         {loadingRepayments ? (
           <div className="flex h-32 items-center justify-center">
-            <Loader2 size={24} className="animate-spin" style={{ color: "#0a3622" }} />
+            <Loader2 size={24} className="animate-spin" style={{ color: "#8B6E4E" }} />
           </div>
         ) : repayments.length === 0 ? (
           <div className="card empty-state">
-            <Receipt size={40} className="mx-auto mb-2" style={{ color: "#d1d5db" }} />
-            <p className="text-sm" style={{ color: "#9ca3af" }}>
+            <Receipt size={40} className="mx-auto mb-2" style={{ color: "#E2D9CE" }} />
+            <p className="text-sm" style={{ color: "#7A6E64" }}>
               No payments recorded yet for this loan.
             </p>
           </div>
@@ -258,23 +276,23 @@ export default function RepaymentsPage() {
               <tbody>
                 {repayments.map((r) => (
                   <tr key={r.id}>
-                    <td className="font-semibold" style={{ color: "#1a1a1a" }}>
+                    <td className="font-semibold" style={{ color: "#1C1814" }}>
                       {formatDate(r.payment_date)}
                     </td>
-                    <td className="font-semibold" style={{ color: "#059669" }}>
+                    <td className="font-semibold" style={{ color: "#8B6E4E" }}>
                       {formatCurrency(Number(r.amount_paid))}
                     </td>
                     <td>
                       <span className="inline-flex items-center gap-1.5 text-sm">
                         {r.payment_method === "Cash" ? (
-                          <Banknote size={14} style={{ color: "#059669" }} />
+                          <Banknote size={14} style={{ color: "#8B6E4E" }} />
                         ) : (
-                          <CreditCard size={14} style={{ color: "#0a3622" }} />
+                          <CreditCard size={14} style={{ color: "#C8A882" }} />
                         )}
                         {r.payment_method}
                       </span>
                     </td>
-                    <td className="text-xs" style={{ color: "#9ca3af" }}>
+                    <td className="text-xs" style={{ color: "#7A6E64" }}>
                       {formatDate(r.created_at)}
                     </td>
                   </tr>
@@ -293,17 +311,20 @@ export default function RepaymentsPage() {
           <div
             className="mb-5 rounded-xl p-4"
             style={{
-              background: "rgba(217, 119, 6, 0.06)",
-              border: "1px solid rgba(217, 119, 6, 0.15)",
+              background: "rgba(200, 168, 130, 0.08)",
+              border: "1px solid rgba(200, 168, 130, 0.2)",
             }}
           >
-            <p className="text-xs font-medium" style={{ color: "#6b7280" }}>
+            <p className="text-xs font-medium" style={{ color: "#7A6E64" }}>
               Remaining balance for{" "}
-              <span className="font-semibold" style={{ color: "#1a1a1a" }}>
+              <span className="font-semibold" style={{ color: "#1C1814" }}>
                 {selectedLoan.borrowers.full_name}
               </span>
             </p>
-            <p className="text-xl font-bold mt-0.5" style={{ color: "#d97706" }}>
+            <p
+              className="text-xl font-bold mt-0.5"
+              style={{ color: "#C8A882", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+            >
               {formatCurrency(Number(selectedLoan.balance))}
             </p>
           </div>
@@ -392,19 +413,22 @@ export default function RepaymentsPage() {
   return (
     <div className="animate-fade-in">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold flex items-center gap-2" style={{ color: "#1a1a1a" }}>
-          <Receipt size={24} style={{ color: "#0a3622" }} />
+        <h1
+          className="text-2xl font-bold flex items-center gap-2"
+          style={{ color: "#1C1814", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+        >
+          <Receipt size={24} style={{ color: "#8B6E4E" }} />
           Repayment Ledger
         </h1>
-        <p className="mt-1 text-sm" style={{ color: "#6b7280" }}>
+        <p className="mt-1 text-sm" style={{ color: "#7A6E64" }}>
           Select an active loan to view payment history and log new payments.
         </p>
       </div>
 
       {loans.length === 0 ? (
         <div className="card empty-state">
-          <Receipt size={40} className="mx-auto mb-2" style={{ color: "#d1d5db" }} />
-          <p className="text-sm" style={{ color: "#9ca3af" }}>
+          <Receipt size={40} className="mx-auto mb-2" style={{ color: "#E2D9CE" }} />
+          <p className="text-sm" style={{ color: "#7A6E64" }}>
             No active loans to show. All loans have been paid off!
           </p>
         </div>
@@ -416,33 +440,26 @@ export default function RepaymentsPage() {
               onClick={() => selectLoan(loan)}
               className="card w-full text-left p-5 flex items-center justify-between animate-fade-in group cursor-pointer"
               style={{ animationDelay: `${i * 60}ms` }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow =
-                  "0 6px 20px rgba(10, 54, 34, 0.1)";
-                e.currentTarget.style.transform = "translateY(-2px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow =
-                  "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
             >
               <div className="flex items-center gap-4">
                 <div
                   className="flex h-11 w-11 items-center justify-center rounded-xl shrink-0"
                   style={{
-                    background: "rgba(10, 54, 34, 0.08)",
+                    background: "rgba(139, 110, 78, 0.08)",
                   }}
                 >
-                  <span className="text-sm font-bold" style={{ color: "#0a3622" }}>
+                  <span
+                    className="text-sm font-bold"
+                    style={{ color: "#8B6E4E", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                  >
                     {loan.borrowers.full_name.charAt(0).toUpperCase()}
                   </span>
                 </div>
                 <div>
-                  <p className="font-semibold" style={{ color: "#1a1a1a" }}>
+                  <p className="font-semibold" style={{ color: "#1C1814" }}>
                     {loan.borrowers.full_name}
                   </p>
-                  <p className="text-xs" style={{ color: "#9ca3af" }}>
+                  <p className="text-xs" style={{ color: "#7A6E64" }}>
                     Due {formatDate(loan.due_date)} · Principal{" "}
                     {formatCurrency(Number(loan.principal_amount))}
                   </p>
@@ -451,15 +468,15 @@ export default function RepaymentsPage() {
 
               <div className="flex items-center gap-4">
                 <div className="text-right">
-                  <p className="text-xs font-medium" style={{ color: "#9ca3af" }}>Balance</p>
-                  <p className="font-bold" style={{ color: "#d97706" }}>
+                  <p className="text-xs font-medium" style={{ color: "#7A6E64" }}>Balance</p>
+                  <p className="font-bold" style={{ color: "#C8A882" }}>
                     {formatCurrency(Number(loan.balance))}
                   </p>
                 </div>
                 <ChevronRight
                   size={18}
                   className="transition-colors"
-                  style={{ color: "#d1d5db" }}
+                  style={{ color: "#E2D9CE" }}
                 />
               </div>
             </button>

@@ -27,7 +27,6 @@ export default function Sidebar() {
 
   const filteredNavItems = navItems.filter((item) => {
     if (isAdmin) return true;
-    // Borrowers only see Dashboard and Repayments (or you can adjust as needed)
     return item.href === "/" || item.href === "/repayments";
   });
 
@@ -38,26 +37,29 @@ export default function Sidebar() {
   return (
     <aside
       className="fixed inset-y-0 left-0 z-40 flex w-64 flex-col"
-      style={{ backgroundColor: "#0a3622" }}
+      style={{ backgroundColor: "#1C1814" }}
     >
       {/* ── Logo ──────────────────────────────── */}
       <div className="flex items-center gap-3 px-6 py-7">
         <div
           className="flex h-10 w-10 items-center justify-center rounded-xl"
           style={{
-            backgroundColor: "#00c46a",
-            boxShadow: "0 4px 14px rgba(0, 196, 106, 0.35)",
+            backgroundColor: "#8B6E4E",
+            boxShadow: "0 4px 14px rgba(139, 110, 78, 0.35)",
           }}
         >
           <Sparkles size={20} className="text-white" />
         </div>
         <div>
-          <h1 className="text-lg font-bold text-white tracking-tight">
+          <h1
+            className="text-lg font-bold text-white tracking-tight"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
             LendFlow
           </h1>
           <p
             className="text-[0.65rem] font-medium"
-            style={{ color: "rgba(255,255,255,0.45)" }}
+            style={{ color: "rgba(255,255,255,0.4)", fontFamily: "'Jost', sans-serif" }}
           >
             Loan Management
           </p>
@@ -67,7 +69,7 @@ export default function Sidebar() {
       {/* ── Divider ───────────────────────────── */}
       <div
         className="mx-5 mb-2"
-        style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
+        style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
       />
 
       {/* ── Navigation ────────────────────────── */}
@@ -79,29 +81,29 @@ export default function Sidebar() {
               key={href}
               href={href}
               className={cn(
-                "group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200"
+                "group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-300 ease-in-out"
               )}
               style={
                 isActive
                   ? {
-                      backgroundColor: "rgba(0, 196, 106, 0.15)",
-                      color: "#00e07a",
+                      backgroundColor: "rgba(139, 110, 78, 0.18)",
+                      color: "#C8A882",
                     }
                   : {
-                      color: "rgba(255,255,255,0.55)",
+                      color: "rgba(255,255,255,0.50)",
                     }
               }
               onMouseEnter={(e) => {
                 if (!isActive) {
                   e.currentTarget.style.backgroundColor =
-                    "rgba(255,255,255,0.07)";
+                    "rgba(255,255,255,0.06)";
                   e.currentTarget.style.color = "rgba(255,255,255,0.9)";
                 }
               }}
               onMouseLeave={(e) => {
                 if (!isActive) {
                   e.currentTarget.style.backgroundColor = "transparent";
-                  e.currentTarget.style.color = "rgba(255,255,255,0.55)";
+                  e.currentTarget.style.color = "rgba(255,255,255,0.50)";
                 }
               }}
             >
@@ -109,14 +111,14 @@ export default function Sidebar() {
                 size={18}
                 className="shrink-0"
                 style={{
-                  color: isActive ? "#00c46a" : "rgba(255,255,255,0.4)",
+                  color: isActive ? "#C8A882" : "rgba(255,255,255,0.35)",
                 }}
               />
-              {label}
+              <span style={{ fontFamily: "'Jost', sans-serif" }}>{label}</span>
               {isActive && (
                 <span
                   className="ml-auto h-1.5 w-1.5 rounded-full"
-                  style={{ backgroundColor: "#00c46a" }}
+                  style={{ backgroundColor: "#C8A882" }}
                 />
               )}
             </Link>
@@ -127,12 +129,12 @@ export default function Sidebar() {
       {/* ── Footer ────────────────────────────── */}
       <div
         className="px-5 py-4"
-        style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
+        style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
       >
         <button
           onClick={handleSignOut}
-          className="mb-4 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-white/10"
-          style={{ color: "rgba(255,255,255,0.7)" }}
+          className="mb-4 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-300 hover:bg-white/8"
+          style={{ color: "rgba(255,255,255,0.6)", fontFamily: "'Jost', sans-serif" }}
         >
           <LogOut size={16} />
           Sign out
@@ -140,15 +142,21 @@ export default function Sidebar() {
         <div className="flex items-center gap-3">
           <div
             className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold text-white uppercase"
-            style={{ backgroundColor: "#00c46a" }}
+            style={{ backgroundColor: "#8B6E4E" }}
           >
             {user?.email?.[0] || "U"}
           </div>
           <div className="flex-1 overflow-hidden">
-            <p className="truncate text-sm font-medium text-white">
+            <p
+              className="truncate text-sm font-medium text-white"
+              style={{ fontFamily: "'Jost', sans-serif" }}
+            >
               {user?.email || "User"}
             </p>
-            <p className="text-[0.65rem]" style={{ color: "rgba(255,255,255,0.35)" }}>
+            <p
+              className="text-[0.65rem]"
+              style={{ color: "rgba(255,255,255,0.3)", fontFamily: "'Jost', sans-serif" }}
+            >
               {isAdmin ? "Administrator" : "Borrower"}
             </p>
             {authError && (
