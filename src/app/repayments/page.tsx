@@ -9,6 +9,8 @@ import {
   ChevronRight,
   ArrowLeft,
   Search,
+  Edit2,
+  Trash2,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { formatCurrency, formatDate } from "@/lib/utils";
@@ -27,12 +29,13 @@ export default function RepaymentsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState("");
+  const [editingRepayment, setEditingRepayment] = useState<Repayment | null>(null);
 
-  const [payForm, setPayForm] = useState({
+  const [payForms, setPayForms] = useState([{
     amount_paid: "",
     payment_date: new Date().toISOString().split("T")[0],
     payment_method: "Cash" as "Cash" | "Bank Transfer",
-  });
+  }]);
 
   useEffect(() => {
     fetchLoans();
@@ -69,55 +72,113 @@ export default function RepaymentsPage() {
     if (!selectedLoan) return;
     setSaving(true);
 
-    const amount = parseFloat(payForm.amount_paid);
+    const totalAmount = editingRepayment
+      ? parseFloat(payForms[0].amount_paid) || 0
+      : payForms.reduce((sum, f) => sum + (parseFloat(f.amount_paid) || 0), 0);
 
-    if (amount > Number(selectedLoan.balance)) {
-      alert(
-        `Payment of ${formatCurrency(amount)} exceeds the remaining balance of ${formatCurrency(Number(selectedLoan.balance))}.`
-      );
-      setSaving(false);
+    if (editingRepayment) {
+      // For editing, we update the existing record
+      const { error } = await supabase
+        .from("repayments")
+        .update({
+          amount_paid: totalAmount,
+          payment_date: payForms[0].payment_date,
+          payment_method: payForms[0].payment_method,
+        })
+        .eq("id", editingRepayment.id);
+        
+      if (error) alert(`Error updating: ${error.message}`);
+    } else {
+      // For inserting, check balance first
+      if (totalAmount > Number(selectedLoan.balance)) {
+        alert(
+          `Total payment of ${formatCurrency(totalAmount)} exceeds the remaining balance of ${formatCurrency(Number(selectedLoan.balance))}.`
+        );
+        setSaving(false);
+        return;
+      }
+
+      const inserts = payForms
+        .filter((f) => parseFloat(f.amount_paid) > 0)
+        .map((f) => ({
+          loan_id: selectedLoan.id,
+          amount_paid: parseFloat(f.amount_paid) || 0,
+          payment_date: f.payment_date,
+          payment_method: f.payment_method,
+        }));
+
+      if (inserts.length > 0) {
+        const { error } = await supabase.from("repayments").insert(inserts);
+        if (error) alert(`Error inserting: ${error.message}`);
+      }
+    }
+
+    await syncLoanBalanceAndRefresh(selectedLoan.id, Number(selectedLoan.total_due));
+    
+    setPayForms([{
+      amount_paid: "",
+      payment_date: new Date().toISOString().split("T")[0],
+      payment_method: "Cash",
+    }]);
+    setEditingRepayment(null);
+    setModalOpen(false);
+    setSaving(false);
+  }
+
+  async function handleDeletePayment(repayment: Repayment) {
+    if (!selectedLoan) return;
+    if (!confirm("Are you sure you want to delete this payment record? This action cannot be undone.")) return;
+    
+    setLoadingRepayments(true);
+    const { error } = await supabase.from("repayments").delete().eq("id", repayment.id);
+    
+    if (error) {
+      alert(`Error deleting: ${error.message}`);
+      setLoadingRepayments(false);
       return;
     }
 
-    const { error } = await supabase.from("repayments").insert([{
-      loan_id: selectedLoan.id,
-      amount_paid: amount,
-      payment_date: payForm.payment_date,
-      payment_method: payForm.payment_method,
-    }]);
+    await syncLoanBalanceAndRefresh(selectedLoan.id, Number(selectedLoan.total_due));
+  }
 
-    if (error) {
-      alert(`Error: ${error.message}`);
+  async function syncLoanBalanceAndRefresh(loanId: string, totalDue: number) {
+    // Recalculate total paid from all repayments
+    const { data: reps } = await supabase.from("repayments").select("amount_paid").eq("loan_id", loanId);
+    const totalPaid = (reps || []).reduce((sum, r) => sum + Number(r.amount_paid), 0);
+    const newBalance = totalDue - totalPaid;
+    
+    // Determine new status (if fully paid, mark PAID, else ACTIVE)
+    const newStatus = newBalance <= 0 ? "PAID" : "ACTIVE";
+
+    // Update loan record
+    await supabase.from("loans").update({
+      amount_paid: totalPaid,
+      balance: newBalance,
+      status: newStatus
+    }).eq("id", loanId);
+
+    // Refresh data
+    await fetchLoans();
+
+    const { data: updatedLoan } = await supabase
+      .from("loans")
+      .select("*, borrowers(full_name, phone)")
+      .eq("id", loanId)
+      .single();
+
+    if (updatedLoan) {
+      setSelectedLoan(updatedLoan as LoanWithBorrower);
+      const { data: freshReps } = await supabase
+        .from("repayments")
+        .select("*")
+        .eq("loan_id", loanId)
+        .order("payment_date", { ascending: false });
+      if (freshReps) setRepayments(freshReps);
     } else {
-      setPayForm({
-        amount_paid: "",
-        payment_date: new Date().toISOString().split("T")[0],
-        payment_method: "Cash",
-      });
-      setModalOpen(false);
-
-      await fetchLoans();
-
-      const { data: updatedLoan } = await supabase
-        .from("loans")
-        .select("*, borrowers(full_name, phone)")
-        .eq("id", selectedLoan.id)
-        .single();
-
-      if (updatedLoan) {
-        setSelectedLoan(updatedLoan as LoanWithBorrower);
-        const { data: reps } = await supabase
-          .from("repayments")
-          .select("*")
-          .eq("loan_id", selectedLoan.id)
-          .order("payment_date", { ascending: false });
-        if (reps) setRepayments(reps);
-      } else {
-        setSelectedLoan(null);
-        setRepayments([]);
-      }
+      setSelectedLoan(null);
+      setRepayments([]);
     }
-    setSaving(false);
+    setLoadingRepayments(false);
   }
 
   if (loading) {
@@ -247,15 +308,21 @@ export default function RepaymentsPage() {
             <Receipt size={18} style={{ color: "#8B6E4E" }} />
             Payment History
           </h3>
-          {selectedLoan.status === "ACTIVE" && (
-            <button
-              className="btn-primary"
-              onClick={() => setModalOpen(true)}
-            >
-              <CreditCard size={16} />
-              Log Payment
-            </button>
-          )}
+          <button
+            className="btn-primary"
+            onClick={() => {
+              setEditingRepayment(null);
+              setPayForms([{
+                amount_paid: "",
+                payment_date: new Date().toISOString().split("T")[0],
+                payment_method: "Cash",
+              }]);
+              setModalOpen(true);
+            }}
+          >
+            <CreditCard size={16} />
+            Log Payment
+          </button>
         </div>
 
         {loadingRepayments ? (
@@ -278,6 +345,7 @@ export default function RepaymentsPage() {
                   <th>Amount</th>
                   <th>Method</th>
                   <th>Recorded</th>
+                  <th className="text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -302,6 +370,32 @@ export default function RepaymentsPage() {
                     <td className="text-xs" style={{ color: "#7A6E64" }}>
                       {formatDate(r.created_at)}
                     </td>
+                    <td className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          onClick={() => {
+                            setEditingRepayment(r);
+                            setPayForms([{
+                              amount_paid: r.amount_paid.toString(),
+                              payment_date: r.payment_date,
+                              payment_method: r.payment_method,
+                            }]);
+                            setModalOpen(true);
+                          }}
+                          className="p-1.5 rounded-md hover:bg-black/5 transition-colors"
+                          title="Edit Payment"
+                        >
+                          <Edit2 size={16} style={{ color: "#8B6E4E" }} />
+                        </button>
+                        <button
+                          onClick={() => handleDeletePayment(r)}
+                          className="p-1.5 rounded-md hover:bg-black/5 transition-colors"
+                          title="Delete Payment"
+                        >
+                          <Trash2 size={16} style={{ color: "#ef4444" }} />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -312,8 +406,11 @@ export default function RepaymentsPage() {
         {/* ── Log Payment Modal ─────────────────── */}
         <Modal
           open={modalOpen}
-          onClose={() => setModalOpen(false)}
-          title="Log a Payment"
+          onClose={() => {
+            setModalOpen(false);
+            setEditingRepayment(null);
+          }}
+          title={editingRepayment ? "Edit Payment" : "Log a Payment"}
         >
           <div
             className="mb-5 rounded-xl p-4"
@@ -336,64 +433,102 @@ export default function RepaymentsPage() {
             </p>
           </div>
 
-          <form onSubmit={handlePayment} className="space-y-4">
-            <div>
-              <label className="input-label">Amount Paid *</label>
-              <input
-                type="number"
-                required
-                min="0.01"
-                max={Number(selectedLoan.balance)}
-                step="0.01"
-                className="input-field"
-                placeholder={`Max: ${formatCurrency(Number(selectedLoan.balance))}`}
-                value={payForm.amount_paid}
-                onChange={(e) =>
-                  setPayForm({ ...payForm, amount_paid: e.target.value })
-                }
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="input-label">Payment Date *</label>
-                <input
-                  type="date"
-                  required
-                  className="input-field"
-                  value={payForm.payment_date}
-                  onChange={(e) =>
-                    setPayForm({
-                      ...payForm,
-                      payment_date: e.target.value,
-                    })
-                  }
-                />
+          <form onSubmit={handlePayment} className="space-y-6">
+            {payForms.map((form, index) => (
+              <div key={index} className="space-y-4 border-l-2 pl-4 relative" style={{ borderColor: "#E2D9CE" }}>
+                {!editingRepayment && payForms.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newForms = [...payForms];
+                      newForms.splice(index, 1);
+                      setPayForms(newForms);
+                    }}
+                    className="absolute -right-2 -top-2 p-1 rounded-full hover:bg-black/5"
+                    title="Remove this entry"
+                  >
+                    <Trash2 size={14} style={{ color: "#ef4444" }} />
+                  </button>
+                )}
+                <div>
+                  <label className="input-label">Amount Paid *</label>
+                  <input
+                    type="number"
+                    required
+                    min="0.01"
+                    step="0.01"
+                    className="input-field"
+                    placeholder="Amount..."
+                    value={form.amount_paid}
+                    onChange={(e) => {
+                      const newForms = [...payForms];
+                      newForms[index].amount_paid = e.target.value;
+                      setPayForms(newForms);
+                    }}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="input-label">Payment Date *</label>
+                    <input
+                      type="date"
+                      required
+                      className="input-field"
+                      value={form.payment_date}
+                      onChange={(e) => {
+                        const newForms = [...payForms];
+                        newForms[index].payment_date = e.target.value;
+                        setPayForms(newForms);
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label className="input-label">Payment Method *</label>
+                    <select
+                      className="select-field"
+                      value={form.payment_method}
+                      onChange={(e) => {
+                        const newForms = [...payForms];
+                        newForms[index].payment_method = e.target.value as "Cash" | "Bank Transfer";
+                        setPayForms(newForms);
+                      }}
+                    >
+                      <option value="Cash">Cash</option>
+                      <option value="Bank Transfer">Bank Transfer</option>
+                    </select>
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="input-label">Payment Method *</label>
-                <select
-                  className="select-field"
-                  value={payForm.payment_method}
-                  onChange={(e) =>
-                    setPayForm({
-                      ...payForm,
-                      payment_method: e.target.value as
-                        | "Cash"
-                        | "Bank Transfer",
-                    })
-                  }
-                >
-                  <option value="Cash">Cash</option>
-                  <option value="Bank Transfer">Bank Transfer</option>
-                </select>
-              </div>
-            </div>
+            ))}
+
+            {!editingRepayment && (
+              <button
+                type="button"
+                className="btn-ghost w-full justify-center border-dashed border-2 py-3"
+                style={{ borderColor: "#E2D9CE", color: "#8B6E4E" }}
+                onClick={() => {
+                  setPayForms([
+                    ...payForms,
+                    {
+                      amount_paid: "",
+                      payment_date: new Date().toISOString().split("T")[0],
+                      payment_method: "Cash",
+                    }
+                  ]);
+                }}
+              >
+                + Add another payment entry
+              </button>
+            )}
 
             <div className="flex justify-end gap-3 pt-2">
               <button
                 type="button"
                 className="btn-ghost"
-                onClick={() => setModalOpen(false)}
+                onClick={() => {
+                  setModalOpen(false);
+                  setEditingRepayment(null);
+                }}
               >
                 Cancel
               </button>
@@ -407,7 +542,7 @@ export default function RepaymentsPage() {
                 ) : (
                   <CreditCard size={16} />
                 )}
-                {saving ? "Recording..." : "Record Payment"}
+                {saving ? "Saving..." : editingRepayment ? "Update Payment" : "Record Payment"}
               </button>
             </div>
           </form>

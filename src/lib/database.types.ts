@@ -39,6 +39,10 @@ export type Database = {
           borrower_id: string;
           principal_amount: number;
           interest_rate: number;
+          interest_type: "PERCENTAGE" | "FIXED";
+          interest_amount: number;
+          emi_type: "NONE" | "WEEKLY" | "MONTHLY";
+          emi_amount: number;
           total_due: number;
           amount_paid: number;
           balance: number;
@@ -51,7 +55,11 @@ export type Database = {
           id?: string;
           borrower_id: string;
           principal_amount: number;
-          interest_rate: number;
+          interest_rate?: number;
+          interest_type?: "PERCENTAGE" | "FIXED";
+          interest_amount?: number;
+          emi_type?: "NONE" | "WEEKLY" | "MONTHLY";
+          emi_amount?: number;
           total_due: number;
           amount_paid?: number;
           balance: number;
@@ -65,6 +73,10 @@ export type Database = {
           borrower_id?: string;
           principal_amount?: number;
           interest_rate?: number;
+          interest_type?: "PERCENTAGE" | "FIXED";
+          interest_amount?: number;
+          emi_type?: "NONE" | "WEEKLY" | "MONTHLY";
+          emi_amount?: number;
           total_due?: number;
           amount_paid?: number;
           balance?: number;

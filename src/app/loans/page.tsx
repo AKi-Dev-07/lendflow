@@ -26,7 +26,11 @@ export default function LoansPage() {
   const [form, setForm] = useState({
     borrower_id: "",
     principal_amount: "",
+    interest_type: "PERCENTAGE" as "PERCENTAGE" | "FIXED",
     interest_rate: "",
+    interest_amount: "",
+    emi_type: "NONE" as "NONE" | "WEEKLY" | "MONTHLY",
+    emi_amount: "",
     issue_date: new Date().toISOString().split("T")[0],
     due_date: "",
   });
@@ -53,22 +57,36 @@ export default function LoansPage() {
 
   const totalDue = useMemo(() => {
     const p = parseFloat(form.principal_amount) || 0;
-    const r = parseFloat(form.interest_rate) || 0;
-    return p + p * (r / 100);
-  }, [form.principal_amount, form.interest_rate]);
+    if (form.interest_type === "FIXED") {
+      const amt = parseFloat(form.interest_amount) || 0;
+      return p + amt;
+    } else {
+      const r = parseFloat(form.interest_rate) || 0;
+      return p + p * (r / 100);
+    }
+  }, [form.principal_amount, form.interest_rate, form.interest_type, form.interest_amount]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
 
-    const principal = parseFloat(form.principal_amount);
-    const rate = parseFloat(form.interest_rate);
-    const computed = principal + principal * (rate / 100);
+    const principal = parseFloat(form.principal_amount) || 0;
+    const rate = parseFloat(form.interest_rate) || 0;
+    const intAmount = parseFloat(form.interest_amount) || 0;
+    const emiAmount = parseFloat(form.emi_amount) || 0;
+    
+    const computed = form.interest_type === "FIXED" 
+      ? principal + intAmount 
+      : principal + principal * (rate / 100);
 
     const { error } = await supabase.from("loans").insert([{
       borrower_id: form.borrower_id,
       principal_amount: principal,
-      interest_rate: rate,
+      interest_type: form.interest_type,
+      interest_rate: form.interest_type === "PERCENTAGE" ? rate : 0,
+      interest_amount: form.interest_type === "FIXED" ? intAmount : 0,
+      emi_type: form.emi_type,
+      emi_amount: form.emi_type !== "NONE" ? emiAmount : 0,
       total_due: computed,
       balance: computed,
       issue_date: form.issue_date,
@@ -81,7 +99,11 @@ export default function LoansPage() {
       setForm({
         borrower_id: "",
         principal_amount: "",
+        interest_type: "PERCENTAGE",
         interest_rate: "",
+        interest_amount: "",
+        emi_type: "NONE",
+        emi_amount: "",
         issue_date: new Date().toISOString().split("T")[0],
         due_date: "",
       });
@@ -270,20 +292,88 @@ export default function LoansPage() {
               />
             </div>
             <div>
-              <label className="input-label">Interest Rate (%) *</label>
-              <input
-                type="number"
-                required
-                min="0"
-                step="0.01"
-                className="input-field"
-                placeholder="e.g. 10"
-                value={form.interest_rate}
+              <label className="input-label">Interest Type</label>
+              <select
+                className="select-field"
+                value={form.interest_type}
                 onChange={(e) =>
-                  setForm({ ...form, interest_rate: e.target.value })
+                  setForm({ ...form, interest_type: e.target.value as "PERCENTAGE" | "FIXED" })
                 }
-              />
+              >
+                <option value="PERCENTAGE">Percentage (%)</option>
+                <option value="FIXED">Fixed Amount (Rs.)</option>
+              </select>
             </div>
+          </div>
+
+          <div>
+            {form.interest_type === "PERCENTAGE" ? (
+              <div>
+                <label className="input-label">Interest Rate (%) *</label>
+                <input
+                  type="number"
+                  required
+                  min="0"
+                  step="0.01"
+                  className="input-field"
+                  placeholder="e.g. 10"
+                  value={form.interest_rate}
+                  onChange={(e) =>
+                    setForm({ ...form, interest_rate: e.target.value })
+                  }
+                />
+              </div>
+            ) : (
+              <div>
+                <label className="input-label">Fixed Interest Amount (Rs.) *</label>
+                <input
+                  type="number"
+                  required
+                  min="0"
+                  step="0.01"
+                  className="input-field"
+                  placeholder="e.g. 5000"
+                  value={form.interest_amount}
+                  onChange={(e) =>
+                    setForm({ ...form, interest_amount: e.target.value })
+                  }
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="input-label">EMI / Installments</label>
+              <select
+                className="select-field"
+                value={form.emi_type}
+                onChange={(e) =>
+                  setForm({ ...form, emi_type: e.target.value as "NONE" | "WEEKLY" | "MONTHLY" })
+                }
+              >
+                <option value="NONE">No EMI (Lump Sum)</option>
+                <option value="WEEKLY">Weekly</option>
+                <option value="MONTHLY">Monthly</option>
+              </select>
+            </div>
+            {form.emi_type !== "NONE" && (
+              <div>
+                <label className="input-label">EMI Amount (Rs.) *</label>
+                <input
+                  type="number"
+                  required
+                  min="1"
+                  step="0.01"
+                  className="input-field"
+                  placeholder="e.g. 2000"
+                  value={form.emi_amount}
+                  onChange={(e) =>
+                    setForm({ ...form, emi_amount: e.target.value })
+                  }
+                />
+              </div>
+            )}
           </div>
 
           {/* Auto-calculated Total Due */}
