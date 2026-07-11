@@ -54,8 +54,6 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const { user, isAdmin, loading: authLoading } = useAuth();
 
-  const { user, isAdmin, loading: authLoading } = useAuth();
-
   // Pick a random quote that stays stable for this render
   const quote = useMemo(() => {
     const today = new Date();
