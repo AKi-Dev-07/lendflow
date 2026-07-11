@@ -71,7 +71,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </>
 
       {/* ── Main Content ──────────────────────── */}
-      <main className="flex-1 w-full md:ml-64 px-4 py-6 md:px-8 md:py-7 overflow-x-hidden animate-fade-in">
+      <main className="flex-1 w-full md:ml-64 px-4 py-6 md:px-8 md:py-7 overflow-x-hidden">
         <div className="mx-auto max-w-7xl">
           {children}
         </div>
