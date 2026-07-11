@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
-import { Sparkles, Loader2, Mail, Lock } from "lucide-react";
+import { Loader2, Mail, Lock } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -32,27 +33,35 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-1 items-center justify-center p-4">
-      <div className="w-full max-w-md animate-fade-in">
+      <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="mb-8 flex flex-col items-center justify-center">
-          <div
-            className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl"
-            style={{
-              backgroundColor: "#8B6E4E",
-              boxShadow: "0 8px 24px rgba(139, 110, 78, 0.35)",
-            }}
-          >
-            <Sparkles size={28} className="text-white" />
+        <div className="mb-8 flex flex-col items-center justify-center animate-fade-in">
+          <div className="relative mb-4 h-16 w-16 animate-float">
+            <Image
+              src="/logo.png"
+              alt="LendFlow Logo"
+              fill
+              className="object-contain rounded-2xl"
+              priority
+            />
           </div>
           <h1
-            className="text-3xl font-bold tracking-tight"
-            style={{ color: "#1C1814", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+            className="text-3xl font-bold tracking-tight animate-fade-in"
+            style={{
+              color: "#1C1814",
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              animationDelay: "100ms",
+            }}
           >
             LendFlow
           </h1>
           <p
-            className="mt-2 text-sm font-medium"
-            style={{ color: "#7A6E64", fontFamily: "'Jost', sans-serif" }}
+            className="mt-2 text-sm font-medium animate-fade-in"
+            style={{
+              color: "#7A6E64",
+              fontFamily: "'Jost', sans-serif",
+              animationDelay: "200ms",
+            }}
           >
             Welcome back. Please enter your details.
           </p>
@@ -60,15 +69,16 @@ export default function LoginPage() {
 
         {/* Card */}
         <div
-          className="rounded-[10px] p-8"
+          className="rounded-[10px] p-8 animate-fade-in"
           style={{
             backgroundColor: "#FDFCFB",
             boxShadow: "0 10px 40px rgba(28, 24, 20, 0.06)",
             border: "1px solid #E2D9CE",
+            animationDelay: "150ms",
           }}
         >
           <form onSubmit={handleLogin} className="space-y-5">
-            <div>
+            <div className="animate-fade-in" style={{ animationDelay: "250ms" }}>
               <label
                 className="mb-1.5 block text-sm font-semibold"
                 style={{ color: "#1C1814", fontFamily: "'Jost', sans-serif" }}
@@ -90,7 +100,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div>
+            <div className="animate-fade-in" style={{ animationDelay: "350ms" }}>
               <label
                 className="mb-1.5 block text-sm font-semibold"
                 style={{ color: "#1C1814", fontFamily: "'Jost', sans-serif" }}
@@ -114,7 +124,7 @@ export default function LoginPage() {
 
             {error && (
               <div
-                className="rounded-lg p-3 text-sm font-medium"
+                className="rounded-lg p-3 text-sm font-medium animate-scale-in"
                 style={{
                   backgroundColor: "rgba(180, 77, 77, 0.08)",
                   color: "#b44d4d",
@@ -128,7 +138,8 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary mt-2 w-full justify-center py-3"
+              className="btn-primary mt-2 w-full justify-center py-3 animate-fade-in"
+              style={{ animationDelay: "450ms" }}
             >
               {loading ? <Loader2 size={18} className="animate-spin" /> : "Sign in"}
             </button>

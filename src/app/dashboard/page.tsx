@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   Landmark,
   ArrowUpRight,
@@ -9,11 +9,24 @@ import {
   Loader2,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { formatCurrency, formatDate, daysUntil, getGreeting } from "@/lib/utils";
+import { formatCurrency, formatDate, daysUntil } from "@/lib/utils";
 import StatCard from "@/components/StatCard";
 import StatusBadge from "@/components/StatusBadge";
 import type { LoanWithBorrower } from "@/lib/database.types";
 import { useAuth } from "@/lib/AuthContext";
+
+const quotes = [
+  { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+  { text: "Money is only a tool. It will take you wherever you wish, but it will not replace you as the driver.", author: "Ayn Rand" },
+  { text: "Do not save what is left after spending, but spend what is left after saving.", author: "Warren Buffett" },
+  { text: "An investment in knowledge pays the best interest.", author: "Benjamin Franklin" },
+  { text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb" },
+  { text: "Wealth consists not in having great possessions, but in having few wants.", author: "Epictetus" },
+  { text: "Fortune favors the bold.", author: "Virgil" },
+  { text: "A wise person should have money in their head, but not in their heart.", author: "Jonathan Swift" },
+  { text: "It is not the man who has too little, but the man who craves more, that is poor.", author: "Seneca" },
+  { text: "Formal education will make you a living; self-education will make you a fortune.", author: "Jim Rohn" },
+];
 
 interface DashboardStats {
   activeLoans: number;
@@ -30,6 +43,13 @@ export default function DashboardPage() {
   const [upcoming, setUpcoming] = useState<LoanWithBorrower[]>([]);
   const [loading, setLoading] = useState(true);
   const { user, isAdmin, loading: authLoading } = useAuth();
+
+  // Pick a random quote that stays stable for this render
+  const quote = useMemo(() => {
+    const today = new Date();
+    const dayIndex = (today.getFullYear() * 366 + today.getMonth() * 31 + today.getDate()) % quotes.length;
+    return quotes[dayIndex];
+  }, []);
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -97,20 +117,23 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="animate-fade-in">
-      {/* ── Header ────────────────────────────── */}
-      <div className="mb-8">
+    <div>
+      {/* ── Header with Quote ────────────────── */}
+      <div className="mb-8 animate-fade-in">
         <h1
           className="text-2xl font-bold"
           style={{ color: "#1C1814", fontFamily: "'Cormorant Garamond', Georgia, serif" }}
         >
-          {getGreeting()} 👋
+          {isAdmin ? "Portfolio Overview" : "Your Loans"}
         </h1>
-        <p className="mt-1 text-sm" style={{ color: "#7A6E64" }}>
-          {isAdmin
-            ? "Here's your lending portfolio overview."
-            : "Here's the summary of your current loans."}
-        </p>
+        <div className="mt-3">
+          <p className="quote-text">
+            &ldquo;{quote.text}&rdquo;
+          </p>
+          <p className="quote-author mt-1.5">
+            — {quote.author}
+          </p>
+        </div>
       </div>
 
       {/* ── Stat Cards ────────────────────────── */}
@@ -151,22 +174,26 @@ export default function DashboardPage() {
             Upcoming Payments
           </h2>
           <span
-            className="ml-1 rounded-full px-2.5 py-0.5 text-xs font-semibold"
-            style={{ backgroundColor: "rgba(139, 110, 78, 0.1)", color: "#8B6E4E" }}
+            className="ml-1 rounded-full px-2.5 py-0.5 text-xs font-semibold animate-scale-in"
+            style={{
+              backgroundColor: "rgba(139, 110, 78, 0.1)",
+              color: "#8B6E4E",
+              animationDelay: "400ms",
+            }}
           >
             Next 7 days
           </span>
         </div>
 
         {upcoming.length === 0 ? (
-          <div className="card empty-state">
+          <div className="card empty-state animate-scale-in" style={{ animationDelay: "300ms" }}>
             <CalendarClock size={40} className="mx-auto mb-2" style={{ color: "#E2D9CE" }} />
             <p className="text-sm" style={{ color: "#7A6E64" }}>
               No payments due this week. You&apos;re all caught up!
             </p>
           </div>
         ) : (
-          <div className="table-container">
+          <div className="table-container animate-fade-in" style={{ animationDelay: "300ms" }}>
             <table>
               <thead>
                 <tr>
